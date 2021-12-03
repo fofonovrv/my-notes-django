@@ -1,13 +1,28 @@
 # Личная шпаргалка по django
 
-### Уроки: https://github.com/selfedu-rus/django-lessons/blob/main/lesson-4-coolsite.zip
+### Уроки: https://github.com/selfedu-rus/django-lessons
 
 ## Классы, Модели и Базы данных:
 ### поле для автоматической записи даты и времени создания записи в таблице БД:
 ```
 time_create = models.DateTimeField(auto_now_add=True)
 ```
+###Аргументы поля.
+Ссылка на документацию https://docs.djangoproject.com/en/2.2/ref/models/fields/
+
 для обновления записи:
 ```
-time_update = models.DateTimeField(auto_now=True)
+auto_now=True
+```
+для индексации поля (для более быстрого поиска по таблице)
+```
+db_index = true
+```
+разрешить оставлять поле без значения:
+```
+null=True
+```
+разрешить оставлять значение пустым, для текстовых и строковых полей:
+```
+blank=True
 ```
