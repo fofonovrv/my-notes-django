@@ -7,7 +7,7 @@
 ```
 time_create = models.DateTimeField(auto_now_add=True)
 ```
-###Аргументы поля.
+### Аргументы поля.
 Ссылка на документацию https://docs.djangoproject.com/en/2.2/ref/models/fields/
 
 для обновления записи:
