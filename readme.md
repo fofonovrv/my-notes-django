@@ -148,13 +148,30 @@ def index(request):
 ```
 # Файл настроек settyngs.py
 ```
-SECRET_KEY = 'django-insecure-1w%2=ua!=ni4%l-qp0rgs(1qr1ecetu^*1qvo*0ep5)#4oug&i'
-TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')  # папка temlates в корне проекта
-DEBUG = True
-STATIC_URL = '/static/'  # префикс URL-адреса для статических файлов
-STATIC_ROOT = os.path.join(BASE_DIR, "static")  # путь к общей статической папке
-STATICFILES_DIRS = []  # список дополнительных (нестандартных) путей, обычно используется для отладки
-ALLOWED_HOSTS = ['127.0.0.1']   # спискок адресов и доменов, с которых разрешен вход 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # путь к медиа контенту, папка media в корне проекта
-MEDIA_URL = '/media/'  # префикс URL-адреса для медиа файлов
+папка temlates в корне проекта:
+TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
+```
+префикс URL-адреса для статических файлов:
+```
+STATIC_URL = '/static/'
+```
+путь к общей статической папке
+```
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+```
+список дополнительных (нестандартных) путей, обычно используется для отладки
+```
+STATICFILES_DIRS = []
+```
+спискок адресов и доменов, с которых разрешен вход 
+```
+ALLOWED_HOSTS = ['127.0.0.1']
+```
+путь к медиа контенту, папка media в корне проекта
+```
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+```
+префикс URL-адреса для медиа файлов
+```
+MEDIA_URL = '/media/
 ```
