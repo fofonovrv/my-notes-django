@@ -182,19 +182,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/
 ```
 ## Формы
-### Функция представления 
-views.py, отобразить форму, если запрос не post, в противном случае, проверить на правильность заполнения:
-```
-def addpage(request):
-    if request.method == 'POST':
-        form = AddPostForm(request.POST)
-        if form.is_valid():
-            print(form.cleaned_data)
-    else:
-        form = AddPostForm()
-    return render(request, 'blog/addpage.html', {'form': form, 'menu': menu, 'title': 'Добавление статьи'})
-```
-При ошибках в заполении Django автоматически выведет подсказки пользователю.
+
 ### Шаблон для отображения формы
 Передать POST запрос функции представления addpage (простейший вариант):
 ```
@@ -216,8 +204,8 @@ def addpage(request):
 <button type="submit">Добавить</button>
 </form>
 ```
-### forms.py
-Прописываем форму для добавление записи поста класса Post:
+### Описание класса формы
+Прописываем форму для добавление записи поста класса Post в forms.py:
 ```
 from django import forms
 from .models import *
@@ -229,3 +217,25 @@ class AddPostForm(forms.Form):
     is_public = forms.BooleanField(label='Опубликовать', required=False, initial=True)
     cat = forms.ModelChoiceField(queryset=Category.objects.all(), label='Категория', empty_label='Не выбрано')
 ```
+Также в описании класса формы можно сразу определить стиль каждого поля с помощью параметра widget:
+```
+title = forms.CharField(max_length=200, label='Заголовок', widget=forms.TextInput(attrs={'class':'form-input'}))
+```
+
+### Функция представления 
+views.py, отобразить форму, если запрос не post, в противном случае, проверить на правильность заполнения:
+```
+def addpage(request):
+    if request.method == 'POST':
+        form = AddPostForm(request.POST)
+        if form.is_valid():
+            try:
+                Posts.objects.create(**form.cleaned_data)
+                return redirect('index')
+            except :
+                form.add_error(None, 'Ошибка добавления поста')
+    else:
+        form = AddPostForm()
+    return render(request, 'blog/addpage.html', {'form': form, 'menu': menu, 'title': 'Добавление статьи'})
+```
+При ошибках в заполении Django автоматически выведет подсказки пользователю.
