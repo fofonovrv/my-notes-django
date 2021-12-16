@@ -1,4 +1,4 @@
-# Личная шпаргалка по django
+# Шпаргалка по django
 
 ### Уроки: https://github.com/selfedu-rus/django-lessons
 
