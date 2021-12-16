@@ -181,7 +181,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 ```
 MEDIA_URL = '/media/
 ```
-## Формы
+## Отображение формы, запись в БД из формы
 
 ### Шаблон для отображения формы
 Передать POST запрос функции представления addpage (простейший вариант):
@@ -221,8 +221,16 @@ class AddPostForm(forms.Form):
 ```
 title = forms.CharField(max_length=200, label='Заголовок', widget=forms.TextInput(attrs={'class':'form-input'}))
 ```
+Но правильнее связать форму напрямую с моделью:
+```
+class AddPostForm(forms.ModelForm):
+    class Meta:
+        model = Posts
+        fields = '__all__'
+```
+Параметр '__all__' позволяет отобразить все поля, кроме тех, что заполняются автоматически
 
-### Функция представления 
+### Функция представления формы
 views.py, отобразить форму, если запрос не post, в противном случае, проверить на правильность заполнения:
 ```
 def addpage(request):
