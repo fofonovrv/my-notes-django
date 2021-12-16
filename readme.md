@@ -133,6 +133,11 @@ def index(request):
     posts = Posts.objects.all()
     return render(request, 'blog/index.html')
 ```
+Можно использовать стандартную функцию джанго, которая выводит ошибку 404, если запись в базе не будет найдена
+```
+from django.shortcuts import get_object_or_404
+posts = get_object_or_404(Posts, pk=some_post_id)
+```
 ### index.html
 ```
 <!DOCTYPE html>
