@@ -120,7 +120,7 @@ class Posts(models.Model):
 ```
 создаем отдельный класс отображения таблицы Posts как дочерний класс ListView. 
 
-### viws.py:
+### views.py:
 ```
 from .models import Posts
 from django.views.generic.list import ListView
