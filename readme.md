@@ -181,3 +181,51 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 ```
 MEDIA_URL = '/media/
 ```
+## Формы
+### Функция представления 
+views.py, отобразить форму, если запрос не post, в противном случае, проверить на правильность заполнения:
+```
+def addpage(request):
+    if request.method == 'POST':
+        form = AddPostForm(request.POST)
+        if form.is_valid():
+            print(form.cleaned_data)
+    else:
+        form = AddPostForm()
+    return render(request, 'blog/addpage.html', {'form': form, 'menu': menu, 'title': 'Добавление статьи'})
+```
+При ошибках в заполении Django автоматически выведет подсказки пользователю.
+### Шаблон для отображения формы
+Передать POST запрос функции представления addpage (простейший вариант):
+```
+<form action="{% url 'addpage' %}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+<button type="submit">Добавить</button>
+</form>
+
+```
+Вариант через цикл (стилизованныцй), с полем для вывода ошибок:
+```
+<form action="{% url 'addpage' %}" method="post">
+    {% csrf_token %}
+    {% for f in form %}
+        <p><label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}: </label>{{ f }}</p>
+        <div class="form-error">{{ f.errors }}</div>
+    {% endfor %}
+<button type="submit">Добавить</button>
+</form>
+```
+### forms.py
+Прописываем форму для добавление записи поста класса Post:
+```
+from django import forms
+from .models import *
+
+class AddPostForm(forms.Form):
+    title = forms.CharField(max_length=200, label='Заголовок')
+    slug = forms.SlugField(max_length=100, label='URL')
+    content = forms.CharField(widget=forms.Textarea(attrs={'cols': 60, 'rows': 10}), label='Текст')
+    is_public = forms.BooleanField(label='Опубликовать', required=False, initial=True)
+    cat = forms.ModelChoiceField(queryset=Category.objects.all(), label='Категория', empty_label='Не выбрано')
+```
