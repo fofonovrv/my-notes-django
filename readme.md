@@ -332,3 +332,17 @@ class PostsCategory(ListView):
 path('', views.PostsView.as_view(), name='index'),
 path('category/<slug:cat_slug>/', views.PostsCategory.as_view(), name='category'),
 ```
+## QuerySet API
+Некоторые полезные функции и медоты для обращения к связанным таблицам БД через API Django.
+### Обращение к вторичной таблице по внешнему первичному ключу
+```
+c = Category.object.get(name='Docker')  # присваеваем переменной объект экземляра Category с именем Docker (подразумевая, что имя уникальное)
+c.posts_set.all()  # получаем через переменную класса Category все объекты класса Posts
+```
+posts_set - получение вторичной модели Posts, чтобы названия метода posts_set заменить на, например, get_posts, нужно дописать дополнительное свойство в ключевом поле модели Posts:
+```
+cat = models.ForeignKey('Category', on_delete=models.CASCADE, verbose_name="Категория", related_name='get_posts')
+```
+
+### Фильтры полей (lookups)
+Posts.objects.filter(title__contains='Docker')  # выбрать все поля из Posts, поле title который включает 'Docker'
