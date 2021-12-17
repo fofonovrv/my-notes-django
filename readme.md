@@ -248,8 +248,16 @@ def addpage(request):
         form = AddPostForm()
     return render(request, 'blog/addpage.html', {'form': form, 'menu': menu, 'title': 'Добавление статьи'})
 ```
-При ошибках в заполении Django автоматически выведет подсказки пользователю.
-Но в случае, когда класс формы наследуется от forms.ModelForm метод Posts.objects.create(**form.cleaned_data) можно заменить на метод save:
+При ошибках в заполении Django автоматически выведет подсказки пользователю.Т
+Но в случае, когда класс формы наследуется от forms.ModelForm метод Posts.objects.create(**form.cleaned_data) можно заменить на метод save. акже, для корректной загрузки фото при создании экземпляра формы нужно передать параметр request.FILES. Итого, функция представления формы добавления статьи:
 ```
-form.save()
+def addpage(request):
+    if request.method == 'POST':
+        form = AddPostForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+    else:
+        form = AddPostForm()
+    return render(request, 'blog/addpage.html', {'form': form, 'menu': menu, 'title': 'Добавление статьи'})
 ```
