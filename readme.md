@@ -152,7 +152,7 @@ post = get_object_or_404(Posts, pk=some_post_id)
 </body>
 </html>
 ```
-# Файл настроек settyngs.py
+## Файл настроек settyngs.py
 
 папка temlates в корне проекта:
 ```
@@ -249,7 +249,7 @@ def addpage(request):
     return render(request, 'blog/addpage.html', {'form': form, 'menu': menu, 'title': 'Добавление статьи'})
 ```
 При ошибках в заполении Django автоматически выведет подсказки пользователю.Т
-Но в случае, когда класс формы наследуется от forms.ModelForm метод Posts.objects.create(**form.cleaned_data) можно заменить на метод save. акже, для корректной загрузки фото при создании экземпляра формы нужно передать параметр request.FILES. Итого, функция представления формы добавления статьи:
+Но в случае, когда класс формы наследуется от forms.ModelForm метод Posts.objects.create(**form.cleaned_data) можно заменить на метод save. В этом случае, для корректной загрузки фото, при создании экземпляра формы нужно передать параметр request.FILES. Итого, функция представления формы добавления статьи:
 ```
 def addpage(request):
     if request.method == 'POST':
@@ -260,4 +260,75 @@ def addpage(request):
     else:
         form = AddPostForm()
     return render(request, 'blog/addpage.html', {'form': form, 'menu': menu, 'title': 'Добавление статьи'})
+```
+В этом случае, в шаблоне страницы в строке формирования формы добавим enctype="multipart/form-data:
+```
+<form action="{% url 'add_page' %}" method="post" enctype="multipart/form-data">
+```
+### Валидаторы данных в полях формы
+При вызове метода save() формы сначала выполняются стандартные валидаторы Джанго в соответствии с ограничениями полей модели в models.py. Затем выполняются пользовательские валидаторы.
+### Пользовательские валидаторы
+Пользовательские валидаторы прописываются в forms.py как методы класса формы:
+```
+from django.core.exceptions import ValidationError
+...
+class...
+
+    def clean_title(self):
+        title = self.cleaned_data['title']  # присваеваем значение поля title
+        if len(title) > 200:  # проверяем длину строки значения
+            raise ValidationError('Длина превышает 200 символов')  # сообщение в случе ошибки
+
+        return title
+```
+Где "clean_" - обязательная часть, дальше title - название поля. 
+
+## Классы представлений
+Список встроенных представлений-классов https://djbook.ru/rel1.9/ref/class-based-views/index.html
+Наиболее часто используют ListView и ListDetail.
+
+### Класс отображения списка
+Класс просмотра списка постов. Выбираются все значения из БД, прописываются методы для передачи динамического контекста и фильтра запроса к БД.
+Объявим два класса - список постов (опубликованных) и список постов выбранной категории:
+```
+from django.views.generic.list import ListView
+
+
+class PostsView(ListView):
+    model = Posts
+    template_name = 'blog/posts.html'
+    context_object_name = 'posts'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)  # получаем весь именованный контекст, который уже сформирован
+        context['menu'] = menu  # добавляем свои динамические значения в контекст
+        context['title'] = 'Главная страница'
+        context['cat_selected'] = 0
+        return context  # возвращаем сформированный контекст
+
+    def get_queryset(self):
+        return Posts.objects.filter(is_public=True)
+
+
+class PostsCategory(ListView):
+    model = Posts
+    template_name = 'blog/posts.html'
+    context_object_name = 'posts'
+    allow_empty = False
+
+    def get_queryset(self):
+        # фильтр по опукликованным статьям и слагу категории
+        return Posts.objects.filter(cat__slug=self.kwargs['cat_slug'], is_public=True)  
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Категория - ' + str(context['posts'][0].cat) 
+        context['menu'] = menu
+        context['cat_selected'] = context['posts'][0].cat_id
+        return context
+```
+В urls.py добавим строки вызова метода as_view наших классов:
+```
+path('', views.PostsView.as_view(), name='index'),
+path('category/<slug:cat_slug>/', views.PostsCategory.as_view(), name='category'),
 ```
