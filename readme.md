@@ -345,4 +345,14 @@ cat = models.ForeignKey('Category', on_delete=models.CASCADE, verbose_name="Ка
 ```
 
 ### Фильтры полей (lookups)
+```
 Posts.objects.filter(title__contains='Docker')  # выбрать все поля из Posts, поле title который включает 'Docker'
+Posts.objects.filter(title__icontains='Docker')  # то же самое, но без учета регистра. !!!В SQLite только для символов ASCI (латинских), в остальных норм
+Posts.objects.filter(pk__in=[1, 5, 7])  # выбрать записи с первичным ключем (id) = 1, 3, 7
+Posts.objects.filter(pk__in=[1, 5, 7], is_public=True)  # сразу несколько фильтров можно указывать через запятую
+Posts.objects.filter(cat__in=[1, 2])  # фильтр по внешнему ключу "cat" (id категории), выбираем все посты первой и второй категории
+```
+### Использование класса Q для фильтров
+& - логическое И.
+| - логическое ИЛИ.
+~ - логическое НЕ.
