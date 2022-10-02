@@ -1,7 +1,8 @@
 # Шпаргалка по django
 
-### Уроки: https://github.com/selfedu-rus/django-lessons
-### Видео к урокам: https://www.youtube.com/playlist?list=PLA0M1Bcd0w8xO_39zZll2u1lz_Q-Mwn1F
+#### [Уроки](https://github.com/selfedu-rus/django-lessons)
+#### [Видео к урокам](https://www.youtube.com/playlist?list=PLA0M1Bcd0w8xO_39zZll2u1lz_Q-Mwn1F)
+[памятка по MD](https://gist.github.com/Jekins/2bf2d0638163f1294637)
 
 ## Классы, Модели и Базы данных:
  поле для автоматической записи даты и времени создания записи в таблице БД:
