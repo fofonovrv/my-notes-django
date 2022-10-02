@@ -6,9 +6,8 @@
 
 ## Классы, Модели и Базы данных:
  поле для автоматической записи даты и времени создания записи в таблице БД:
-```
-time_create = models.DateTimeField(auto_now_add=True)
-```
+ 
+<time_create = models.DateTimeField(auto_now_add=True)>
 ### Аргументы поля.
 Ссылка на документацию https://docs.djangoproject.com/en/2.2/ref/models/fields/
 
